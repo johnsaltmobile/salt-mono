@@ -15,11 +15,11 @@ Sandbox, prototyping tool, and ultimatey a demo for devs and employers.
 - run a flavor 
   - android
       ```zsh
-      npx expo run:ios
+      npx expo run:android
       ```
   - ios
-      ```js
-      npx expo run:android
+      ```zsh
+      npx expo run:ios
       ```
 
 ## Docs
