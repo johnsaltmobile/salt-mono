@@ -1,5 +1,5 @@
 if (__DEV__) {
-  require("./ReactotronConfig");
+  require("../ReactotronConfig");
 }
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';

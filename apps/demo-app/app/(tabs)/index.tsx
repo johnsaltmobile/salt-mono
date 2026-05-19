@@ -1,98 +1,141 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { memo } from 'react'
+import { FlatList, ListRenderItem, StyleSheet, Text, View } from 'react-native'
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export interface Product {
+  id: string
+  name: string
+  price: number
+  inStock: boolean
+}
 
-export default function HomeScreen() {
+interface ContainerProps {
+  inventoryData: Product[]
+}
+
+const InventoryRow = memo(({ item }: { item: Product }) => {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={styles.rowContainer}>
+      <Text style={styles.productName}>{item.name}</Text>
+      <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
+    </View>
+  )
+})
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+export default function Container({ inventoryData }: ContainerProps) {
+  const renderItem: ListRenderItem<Product> = ({ item }) => (
+    <InventoryRow item={item} />
+  )
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>List</Text>
+
+      {(!inventoryData || inventoryData.length === 0) ? (
+        <View style={styles.emptyCenteredView}>
+          <Text style={styles.emptyText}>No items available</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={inventoryData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          initialNumToRender={15}
+          maxToRenderPerBatch={20}
+          windowSize={11}
+          removeClippedSubviews={true}
+          style={styles.listStyle}
+        />
+      )}
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  text: {
+    fontSize: 16,
+    color: '#333333',
+    paddingVertical: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  listStyle: {
+    flex: 1,
+    width: '100%',
   },
-});
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#fff',
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+  },
+  productPrice: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
+  emptyCenteredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#888',
+  }
+})
+
+
+// NOTES  
+const idCrypto = (): string => crypto.randomUUID(); // Node
+const idMath = (): string => Math.random().toString(36).substring(2, 9);
+const idDate = (): string => Date.now().toString(36);
+
+
+
+// useEffect(() => {
+//   const controller = new AbortController()
+//   const { signal } = controller
+
+//   const getData = async () => {
+//     try {
+//       const res = await fetch('https://picsum.photos/v2/list?limit=20', { signal })
+//       const json = await res.json()
+//     } catch (err: any) {
+//       if (err.name !== 'AbortError') {
+//         // handle errors
+//       }
+//     }
+//   }
+//   getData()
+
+//   return () => controller.abort()
+// }, [])
+
+
+// const filterInventory = (inventoryData: Product[], searchQuery: string) => 
+//   useMemo(() => {
+//     const filtered = inventoryData.filter((item) =>
+//       item.name.toLowerCase().includes(searchQuery.toLowerCase())
+//     )
+//     return filtered.map((item) => ({
+//       key: item.id, 
+//       title: item.name.toUpperCase(), 
+//       formattedPrice: `$${item.price.toFixed(2)}`, 
+//       isAvailable: item.inStock && item.price > 0 
+//     }))
+//   }, [inventoryData, searchQuery])

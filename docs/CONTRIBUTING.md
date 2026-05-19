@@ -1,0 +1,11 @@
+Ticket #9 
+  - CONTRIBUTING.md
+  - Write guidelines for contributing
+  - Types
+    - Single-use? Colocate the type directly within or adjacent (i.e. types.ts) to its component file.  
+    - Specific feature or domain? Elevate type to <path>/featureName/ 
+    - Globally scoped type? Store these in src/types/. For example recipe.type.ts
+    - Enforce this rule using ESLint boundaries (eslint-plugin-import or good-fences)
+  - Onboarding
+  - Coding Standards
+  - Branching Strategy
