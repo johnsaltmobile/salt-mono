@@ -1,12 +1,11 @@
 import { memo } from 'react'
 import { FlatList, ListRenderItem, StyleSheet, Text, View } from 'react-native'
+import type {Recipe} from '@/types/recipe.types'; 
 
-export interface Product {
-  id: string
-  name: string
-  price: number
-  inStock: boolean
-}
+
+type RecipeList = Recipe[]; // move to types 
+
+const 
 
 interface ContainerProps {
   inventoryData: Product[]
